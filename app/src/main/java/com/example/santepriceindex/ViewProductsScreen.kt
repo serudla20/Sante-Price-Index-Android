@@ -17,6 +17,10 @@ fun ViewProductsScreen(navController: NavHostController) {
         mutableStateListOf<Product>()
     }
 
+    var searchText by remember {
+        mutableStateOf("")
+    }
+
     val database = FirebaseDatabase
         .getInstance()
         .getReference("Products")
@@ -60,16 +64,48 @@ fun ViewProductsScreen(navController: NavHostController) {
             style = MaterialTheme.typography.headlineMedium
         )
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(
+
+            value = searchText,
+
+            onValueChange = {
+                searchText = it
+            },
+
+            label = {
+                Text("Search Product")
+            },
+
+            modifier = Modifier.fillMaxWidth()
+        )
+
         Spacer(modifier = Modifier.height(20.dp))
 
         LazyColumn {
 
-            items(productList) { product ->
+            items(
 
-                Card(
+                productList.filter {
+
+                    it.productName.contains(
+                        searchText,
+                        ignoreCase = true
+                    )
+                }
+
+            ) { product ->
+
+                ElevatedCard(
+
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 12.dp)
+                        .padding(bottom = 12.dp),
+
+                    elevation = CardDefaults.elevatedCardElevation(
+                        defaultElevation = 6.dp
+                    )
                 ) {
 
                     Column(
@@ -95,6 +131,41 @@ fun ViewProductsScreen(navController: NavHostController) {
                         Text(
                             text = "Selling Price: ${product.sellingPrice}"
                         )
+
+                        Spacer(
+                            modifier = Modifier.height(10.dp)
+                        )
+
+                        ElevatedButton(
+                            onClick = {
+
+                                navController.navigate(
+
+                                    "edit/${product.id}/${product.productName}/${product.costPrice}/${product.sellingPrice}"
+                                )
+                            }
+                        ) {
+
+                            Text("Edit")
+                        }
+
+                        Spacer(
+                            modifier = Modifier.height(10.dp)
+                        )
+
+                        ElevatedButton(
+
+                            onClick = {
+
+                                database
+                                    .child(product.id)
+                                    .removeValue()
+                            }
+
+                        ) {
+
+                            Text("Delete")
+                        }
                     }
                 }
             }

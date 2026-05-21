@@ -3,13 +3,15 @@ package com.example.santepriceindex.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 
 @Composable
-fun CalculatorScreen() {
+fun CalculatorScreen(navController: NavHostController) {
 
-    var mandiPrice by remember {
+    var costPrice by remember {
         mutableStateOf("")
     }
 
@@ -17,18 +19,25 @@ fun CalculatorScreen() {
         mutableStateOf("")
     }
 
-    var profitMargin by remember {
+    var extraCharges by remember {
+        mutableStateOf("")
+    }
+
+    var profitPercent by remember {
         mutableStateOf("")
     }
 
     var result by remember {
-        mutableStateOf(0.0)
+        mutableStateOf("")
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(20.dp),
+
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
 
         Text(
@@ -39,12 +48,12 @@ fun CalculatorScreen() {
         Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
-            value = mandiPrice,
+            value = costPrice,
             onValueChange = {
-                mandiPrice = it
+                costPrice = it
             },
             label = {
-                Text("Mandi Price")
+                Text("Cost Price")
             }
         )
 
@@ -63,32 +72,74 @@ fun CalculatorScreen() {
         Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
-            value = profitMargin,
+            value = extraCharges,
             onValueChange = {
-                profitMargin = it
+                extraCharges = it
             },
             label = {
-                Text("Profit Margin")
+                Text("Extra Charges")
+            }
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(
+            value = profitPercent,
+            onValueChange = {
+                profitPercent = it
+            },
+            label = {
+                Text("Desired Profit %")
             }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
+
             onClick = {
 
-                val mandi =
-                    mandiPrice.toDoubleOrNull() ?: 0.0
+                if (
+                    costPrice.isEmpty() ||
+                    transportCost.isEmpty() ||
+                    extraCharges.isEmpty() ||
+                    profitPercent.isEmpty()
+                ) {
 
-                val transport =
-                    transportCost.toDoubleOrNull() ?: 0.0
+                    result = "Please fill all fields"
 
-                val profit =
-                    profitMargin.toDoubleOrNull() ?: 0.0
+                } else {
 
-                result =
-                    mandi + transport + profit
+                    val cp = costPrice.toDoubleOrNull() ?: 0.0
+                    val tc = transportCost.toDoubleOrNull() ?: 0.0
+                    val ec = extraCharges.toDoubleOrNull() ?: 0.0
+                    val pp = profitPercent.toDoubleOrNull() ?: 0.0
+
+                    if (
+                        cp < 0 ||
+                        tc < 0 ||
+                        ec < 0 ||
+                        pp < 0
+                    ) {
+
+                        result = "Invalid values"
+
+                    } else {
+
+                        val totalCost = cp + tc + ec
+
+                        val profitAmount =
+                            (totalCost * pp) / 100
+
+                        val sellingPrice =
+                            totalCost + profitAmount
+
+                        result =
+                            "Suggested Selling Price: ₹$sellingPrice"
+                    }
+                }
             }
+
         ) {
 
             Text("Calculate")
@@ -97,8 +148,8 @@ fun CalculatorScreen() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Recommended Price: ₹$result",
-            style = MaterialTheme.typography.headlineSmall
+            text = result,
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }

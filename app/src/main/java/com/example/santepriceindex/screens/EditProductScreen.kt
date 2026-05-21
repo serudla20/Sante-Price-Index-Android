@@ -1,4 +1,4 @@
-package com.example.santepriceindex
+package com.example.santepriceindex.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -7,25 +7,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.santepriceindex.Product
 import com.google.firebase.database.FirebaseDatabase
 
 @Composable
-fun AddProductScreen(navController: NavHostController) {
+fun EditProductScreen(
+
+    navController: NavHostController,
+
+    product: Product
+) {
 
     var productName by remember {
-        mutableStateOf("")
+        mutableStateOf(product.productName)
     }
 
     var costPrice by remember {
-        mutableStateOf("")
+        mutableStateOf(product.costPrice)
     }
 
     var sellingPrice by remember {
-        mutableStateOf("")
-    }
-
-    var message by remember {
-        mutableStateOf("")
+        mutableStateOf(product.sellingPrice)
     }
 
     val database = FirebaseDatabase
@@ -42,7 +44,7 @@ fun AddProductScreen(navController: NavHostController) {
     ) {
 
         Text(
-            text = "Add Product",
+            text = "Edit Product",
             style = MaterialTheme.typography.headlineMedium
         )
 
@@ -85,45 +87,24 @@ fun AddProductScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-
             onClick = {
 
-                if (
-                    productName.isEmpty() ||
-                    costPrice.isEmpty() ||
-                    sellingPrice.isEmpty()
-                ) {
+                val updatedProduct = Product(
+                    product.id,
+                    productName,
+                    costPrice,
+                    sellingPrice
+                )
 
-                    message = "Please fill all fields"
+                database
+                    .child(product.id)
+                    .setValue(updatedProduct)
 
-                } else {
-
-                    val productId = database.push().key!!
-
-                    val product = Product(
-                        productId,
-                        productName,
-                        costPrice,
-                        sellingPrice
-                    )
-
-                    database
-                        .child(productId)
-                        .setValue(product)
-
-                    message = "Product Added Successfully"
-
-                    navController.popBackStack()
-                }
+                navController.popBackStack()
             }
-
         ) {
 
-            Text("Save Product")
+            Text("Update Product")
         }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(text = message)
     }
 }

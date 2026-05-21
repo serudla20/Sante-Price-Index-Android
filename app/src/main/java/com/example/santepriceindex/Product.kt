@@ -1,9 +1,15 @@
 package com.example.santepriceindex
 
+import java.io.Serializable
+
 data class Product(
 
-    val productName: String = "",
-    val costPrice: String = "",
-    val sellingPrice: String = ""
-)
+    var id: String = "",
 
+    var productName: String = "",
+
+    var costPrice: String = "",
+
+    var sellingPrice: String = ""
+
+) : Serializable

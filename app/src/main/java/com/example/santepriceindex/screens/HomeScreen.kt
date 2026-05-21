@@ -23,69 +23,92 @@ fun HomeScreen(navController: NavController) {
 
         Text(
             text = "Sante Price Index",
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineLarge
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-        Button(
+        ElevatedButton(
+
             onClick = {
                 navController.navigate("calculator")
             },
-            modifier = Modifier.fillMaxWidth()
+
+            modifier = Modifier.fillMaxWidth(),
+
+            shape = MaterialTheme.shapes.large
         ) {
 
             Text("Profit Calculator")
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
-        Button(
+        ElevatedButton(
+
             onClick = {
                 navController.navigate("board")
             },
-            modifier = Modifier.fillMaxWidth()
+
+            modifier = Modifier.fillMaxWidth(),
+
+            shape = MaterialTheme.shapes.large
         ) {
 
             Text("Price Board")
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
-        Button(
+        ElevatedButton(
+
             onClick = {
                 navController.navigate("addproduct")
             },
-            modifier = Modifier.fillMaxWidth()
+
+            modifier = Modifier.fillMaxWidth(),
+
+            shape = MaterialTheme.shapes.large
         ) {
 
             Text("Add Product")
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
-        Button(
+        ElevatedButton(
+
             onClick = {
                 navController.navigate("viewproducts")
             },
-            modifier = Modifier.fillMaxWidth()
+
+            modifier = Modifier.fillMaxWidth(),
+
+            shape = MaterialTheme.shapes.large
         ) {
 
             Text("View Products")
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
-        Button(
+        ElevatedButton(
+
             onClick = {
 
                 FirebaseAuth.getInstance().signOut()
 
                 navController.navigate("login") {
-                    popUpTo("home") { inclusive = true }
+
+                    popUpTo("home") {
+                        inclusive = true
+                    }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+
+            modifier = Modifier.fillMaxWidth(),
+
+            shape = MaterialTheme.shapes.large
         ) {
 
             Text("Logout")
